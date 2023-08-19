@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio Version 17
+
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Odin's Super Cool All Purpose Audio Plug-in - Standalone Plugin", "Odin's Super Cool All Purpose Audio Plug-in_StandalonePlugin.vcxproj", "{968B2352-5929-03F5-BA18-01ED3366B55A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EC9D3FFE-37AF-463F-2A90-793308DE2178} = {EC9D3FFE-37AF-463F-2A90-793308DE2178}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Odin's Super Cool All Purpose Audio Plug-in - VST3", "Odin's Super Cool All Purpose Audio Plug-in_VST3.vcxproj", "{93D501A0-16A9-81C4-C521-F0222C5822FA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EC9D3FFE-37AF-463F-2A90-793308DE2178} = {EC9D3FFE-37AF-463F-2A90-793308DE2178}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Odin's Super Cool All Purpose Audio Plug-in - Shared Code", "Odin's Super Cool All Purpose Audio Plug-in_SharedCode.vcxproj", "{EC9D3FFE-37AF-463F-2A90-793308DE2178}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{93D501A0-16A9-81C4-C521-F0222C5822FA}.Debug|x64.ActiveCfg = Debug|x64
+		{93D501A0-16A9-81C4-C521-F0222C5822FA}.Debug|x64.Build.0 = Debug|x64
+		{93D501A0-16A9-81C4-C521-F0222C5822FA}.Release|x64.ActiveCfg = Release|x64
+		{93D501A0-16A9-81C4-C521-F0222C5822FA}.Release|x64.Build.0 = Release|x64
+		{968B2352-5929-03F5-BA18-01ED3366B55A}.Debug|x64.ActiveCfg = Debug|x64
+		{968B2352-5929-03F5-BA18-01ED3366B55A}.Debug|x64.Build.0 = Debug|x64
+		{968B2352-5929-03F5-BA18-01ED3366B55A}.Release|x64.ActiveCfg = Release|x64
+		{968B2352-5929-03F5-BA18-01ED3366B55A}.Release|x64.Build.0 = Release|x64
+		{EC9D3FFE-37AF-463F-2A90-793308DE2178}.Debug|x64.ActiveCfg = Debug|x64
+		{EC9D3FFE-37AF-463F-2A90-793308DE2178}.Debug|x64.Build.0 = Debug|x64
+		{EC9D3FFE-37AF-463F-2A90-793308DE2178}.Release|x64.ActiveCfg = Release|x64
+		{EC9D3FFE-37AF-463F-2A90-793308DE2178}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
