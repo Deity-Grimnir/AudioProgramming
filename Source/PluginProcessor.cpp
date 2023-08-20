@@ -117,58 +117,22 @@ void OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::prepareToPlay (double sa
     *leftChain.get<Chainpositions::Peak>().coefficients = *peakCoefficients;
     *rightChain.get<Chainpositions::Peak>().coefficients = *peakCoefficients;
 
-     auto cutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(chainSettings.lowCutFreq,sampleRate,2*(chainSettings.lowCutSlope + 1));
+     auto lowCutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(chainSettings.lowCutFreq,sampleRate,2*(chainSettings.lowCutSlope + 1));
 
    
     auto& leftLowCut = leftChain.get < Chainpositions::LowCut > ();
-    updateCutFilter(leftLowCut,cutCoefficients,chainSettings);
+    updateCutFilter(leftLowCut, lowCutCoefficients,chainSettings.lowCutSlope);
 
     auto& rightLowCut = rightChain.get<Chainpositions::LowCut>();
-    updateCutFilter(rightLowCut, cutCoefficients, chainSettings);
-    rightLowCut.setBypassed<0>(true);
-    rightLowCut.setBypassed<1>(true);
-    rightLowCut.setBypassed<2>(true);
-    rightLowCut.setBypassed<3>(true);
+    updateCutFilter(rightLowCut, lowCutCoefficients, chainSettings.lowCutSlope);
+      
+    auto highCutCoefficients = juce::dsp::FilterDesign<float>::designIIRLowpassHighOrderButterworthMethod(chainSettings.highCutFreq, sampleRate, 2 * (chainSettings.highCutSlope * 1));
 
-    switch (chainSettings.lowCutSlope)
-    {
-    case Slope_12:
-    {
-        *rightLowCut.get<0>().coefficients = *cutCoefficients[0];
-        rightLowCut.setBypassed<0>(false);
-        break;
-    }
-    case Slope_24:
-    {
-        *rightLowCut.get<0>().coefficients = *cutCoefficients[0];
-        rightLowCut.setBypassed<0>(false);
-        *rightLowCut.get<1>().coefficients = *cutCoefficients[1];
-        rightLowCut.setBypassed<1>(false);
-        break;
-    }
-    case Slope_36:
-    {
-        *rightLowCut.get<0>().coefficients = *cutCoefficients[0];
-        rightLowCut.setBypassed<0>(false);
-        *rightLowCut.get<1>().coefficients = *cutCoefficients[1];
-        rightLowCut.setBypassed<1>(false);
-        *rightLowCut.get<2>().coefficients = *cutCoefficients[2];
-        rightLowCut.setBypassed<2>(false);
-        break;
-    }
-    case Slope_48:
-    {
-        *rightLowCut.get<0>().coefficients = *cutCoefficients[0];
-        rightLowCut.setBypassed<0>(false);
-        *rightLowCut.get<1>().coefficients = *cutCoefficients[1];
-        rightLowCut.setBypassed<1>(false);
-        *rightLowCut.get<2>().coefficients = *cutCoefficients[2];
-        rightLowCut.setBypassed<2>(false);
-        *rightLowCut.get<3>().coefficients = *cutCoefficients[3];
-        rightLowCut.setBypassed<3>(false);
-        break;
-    }
-    }
+    auto& leftHighCut = leftChain.get <Chainpositions::HighCut>();
+    auto& rightHighCut = rightChain.get <Chainpositions::HighCut>();
+
+    updateCutFilter(leftHighCut, highCutCoefficients, chainSettings.highCutSlope);
+    updateCutFilter(rightHighCut, highCutCoefficients, chainSettings.highCutSlope);
 
 }
 
@@ -219,65 +183,8 @@ void OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::processBlock (juce::Audi
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    auto chainSettings = getChainSettings(apvts);
 
-    updatePeakFilter(chainSettings);
-
-    auto cutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(chainSettings.lowCutFreq, getSampleRate(), 2 * (chainSettings.lowCutSlope + 1));
-
-    auto& leftLowCut = leftChain.get < Chainpositions::LowCut >();
-    updateCutFilter(leftLowCut, cutCoefficients, chainSettings);
-  
-    
-    auto& rightLowCut = rightChain.get<Chainpositions::LowCut>();
-    updateCutFilter(rightLowCut, cutCoefficients, chainSettings);
- /*   rightLowCut.setBypassed<0>(true);
-    rightLowCut.setBypassed<1>(true);
-    rightLowCut.setBypassed<2>(true);
-    rightLowCut.setBypassed<3>(true);
-
-    switch (chainSettings.lowCutSlope)
-    {
-    case Slope_12:
-    {
-        *rightLowCut.get<0>().coefficients = *cutCoefficients[0];
-        rightLowCut.setBypassed<0>(false);
-        break;
-    }
-    case Slope_24:
-    {
-        *rightLowCut.get<0>().coefficients = *cutCoefficients[0];
-        rightLowCut.setBypassed<0>(false);
-        *rightLowCut.get<1>().coefficients = *cutCoefficients[1];
-        rightLowCut.setBypassed<1>(false);
-        break;
-    }
-    case Slope_36:
-    {
-        *rightLowCut.get<0>().coefficients = *cutCoefficients[0];
-        rightLowCut.setBypassed<0>(false);
-        *rightLowCut.get<1>().coefficients = *cutCoefficients[1];
-        rightLowCut.setBypassed<1>(false);
-        *rightLowCut.get<2>().coefficients = *cutCoefficients[2];
-        rightLowCut.setBypassed<2>(false);
-        break;
-    }
-    case Slope_48:
-    {
-        *rightLowCut.get<0>().coefficients = *cutCoefficients[0];
-        rightLowCut.setBypassed<0>(false);
-        *rightLowCut.get<1>().coefficients = *cutCoefficients[1];
-        rightLowCut.setBypassed<1>(false);
-        *rightLowCut.get<2>().coefficients = *cutCoefficients[2];
-        rightLowCut.setBypassed<2>(false);
-        *rightLowCut.get<3>().coefficients = *cutCoefficients[3];
-        rightLowCut.setBypassed<3>(false);
-        break;
-    }
-    }*/
-
-
-
+    updateFilters();
     juce::dsp::AudioBlock<float> block(buffer);
 
     auto leftBlock = block.getSingleChannelBlock(0);
@@ -299,7 +206,7 @@ bool OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::createEditor()
 {
-   /* return new OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor (*this);*/
+   /* return new OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor (*this);*/ 
     return new juce::GenericAudioProcessorEditor(*this);
 
 }
@@ -337,8 +244,6 @@ void OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::updatePeakFilter(const C
 {
     auto peakCoefficients = juce::dsp::IIR::Coefficients<float>::makePeakFilter(getSampleRate(), chainSettings.peakFreq, chainSettings.peakQuality, juce::Decibels::decibelsToGain(chainSettings.peakGainInDecibels));
 
-    //*leftChain.get<Chainpositions::Peak>().coefficients = *peakCoefficients;
-    //*rightChain.get<Chainpositions::Peak>().coefficients = *peakCoefficients;
     updateCoefficients(leftChain.get<Chainpositions::Peak>().coefficients, peakCoefficients);
     updateCoefficients(rightChain.get<Chainpositions::Peak>().coefficients, peakCoefficients);
 
@@ -349,8 +254,43 @@ void OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::updateCoefficients(Coeff
 {
     *old = *replacements;
 }
+void OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::updateLowCutFilters(const ChainSettings& chainSettings)
+{
+    auto cutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(chainSettings.lowCutFreq, getSampleRate(), 2 * (chainSettings.lowCutSlope + 1));
+
+    auto& leftLowCut = leftChain.get<Chainpositions::LowCut >();
+    auto& rightLowCut = rightChain.get<Chainpositions::LowCut>();
+
+
+    updateCutFilter(rightLowCut, cutCoefficients, chainSettings.lowCutSlope);
+    updateCutFilter(leftLowCut, cutCoefficients, chainSettings.lowCutSlope);
+}
+
+void OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::updateHighCutFilters(const ChainSettings& chainSettings)
+{
+    auto highCutCoefficients = juce::dsp::FilterDesign<float>::designIIRLowpassHighOrderButterworthMethod(chainSettings.highCutFreq, getSampleRate(), 2 * (chainSettings.highCutSlope * 1));
+
+    auto& leftHighCut = leftChain.get <Chainpositions::HighCut>();
+    auto& rightHighCut = rightChain.get <Chainpositions::HighCut>();
+
+    updateCutFilter(leftHighCut, highCutCoefficients, chainSettings.highCutSlope);
+    updateCutFilter(rightHighCut, highCutCoefficients, chainSettings.highCutSlope);
+}
+
+
+void OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::updateFilters()
+{
+    auto chainSettings = getChainSettings(apvts);
+
+    updateLowCutFilters(chainSettings);
+    updatePeakFilter(chainSettings);
+    updateHighCutFilters(chainSettings);
+
+}
+
 
 juce::AudioProcessorValueTreeState::ParameterLayout
+
 OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::createParamaterLayout()
 {
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
