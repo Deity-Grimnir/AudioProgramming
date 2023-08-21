@@ -13,7 +13,7 @@
 
 struct CustomVerticalSlider : juce::Slider
 {
-    CustomVerticalSlider() : juce::Slider(juce::Slider::SliderStyle::LinearBarVertical,juce::Slider::NoTextBox)
+    CustomVerticalSlider() : juce::Slider(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,juce::Slider::NoTextBox)
     {
 
     }
