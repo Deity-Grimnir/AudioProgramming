@@ -11,7 +11,14 @@
 
 //==============================================================================
 OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor::OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor (OdinsSuperCoolAllPurposeAudioPluginAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+    : AudioProcessorEditor (&p), audioProcessor (p),
+    peakFreqSliderAttachment(audioProcessor.apvts,"Peak Freq", peakFreqSlider),
+    peakGainSliderAttachment(audioProcessor.apvts, "Peak Gain", peakGainSlider),
+    peakQualitySliderAttachment(audioProcessor.apvts, "Peak Quality", peakQualitySlider),
+    lowCutFreqSliderAttachment(audioProcessor.apvts, "LowCut Freq", lowCutFreqSlider),
+    highCutFreqSliderAttachment(audioProcessor.apvts, "HighCut Freq", highCutFreqSlider),
+    lowCutSlopeSliderAttachment(audioProcessor.apvts, "LowCut Slope", lowCutSlopeSlider),
+    HighCutSlopeSliderAttachment(audioProcessor.apvts, "HighCut Slope", HighCutSlopeSlider)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -65,8 +72,11 @@ void OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor::resized()
     auto LowCutArea = bounds.removeFromLeft(bounds.getWidth() * 0.33);
     auto HighCutArea = bounds.removeFromLeft(bounds.getWidth() * 0.5);
 
-    lowCutFreqSlider.setBounds(LowCutArea);
-    highCutFreqSlider.setBounds(HighCutArea);
+    lowCutFreqSlider.setBounds(LowCutArea.removeFromTop(HighCutArea.getHeight()*0.5));   
+    lowCutSlopeSlider.setBounds(LowCutArea);
+
+    highCutFreqSlider.setBounds(HighCutArea.removeFromTop(HighCutArea.getHeight() * 0.5));
+    HighCutSlopeSlider.setBounds(HighCutArea);
 
     peakFreqSlider.setBounds(bounds.removeFromTop(bounds.getHeight() * 0.33));
     peakGainSlider.setBounds(bounds.removeFromTop(bounds.getHeight() * 0.5));
@@ -82,7 +92,9 @@ std::vector<juce::Component*> OdinsSuperCoolAllPurposeAudioPluginAudioProcessorE
         &peakGainSlider,
         &peakQualitySlider,
         &lowCutFreqSlider,
-        &highCutFreqSlider
+        &highCutFreqSlider,
+        &lowCutSlopeSlider, 
+        &HighCutSlopeSlider
     };
 
 }
