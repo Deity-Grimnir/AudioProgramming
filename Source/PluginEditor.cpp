@@ -15,7 +15,12 @@ OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor::OdinsSuperCoolAllPurpos
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (500, 500);
+    for (auto* comp : getComps())
+    { 
+        addAndMakeVisible(comp);
+    }
+
+    setSize (600, 400);
 
     gainSlider.setSliderStyle(juce::Slider::SliderStyle::LinearHorizontal);
     gainSlider.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 100, 25);
@@ -53,6 +58,33 @@ void OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor::resized()
     // subcomponents in your editor..
     auto sliderLeft = 120;
     gainSlider.setBounds(sliderLeft, 20, getWidth() - sliderLeft - 10, 50);
+
+    auto bounds = getLocalBounds();
+    auto responseArea = bounds.removeFromTop(bounds.getHeight() * 0.33);
+
+    auto LowCutArea = bounds.removeFromLeft(bounds.getWidth() * 0.33);
+    auto HighCutArea = bounds.removeFromLeft(bounds.getWidth() * 0.5);
+
+    lowCutFreqSlider.setBounds(LowCutArea);
+    highCutFreqSlider.setBounds(HighCutArea);
+
+    peakFreqSlider.setBounds(bounds.removeFromTop(bounds.getHeight() * 0.33));
+    peakGainSlider.setBounds(bounds.removeFromTop(bounds.getHeight() * 0.5));
+    peakQualitySlider.setBounds(bounds);
+
+}
+
+std::vector<juce::Component*> OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor::getComps()
+{
+    return
+    {
+        &peakFreqSlider,
+        &peakGainSlider,
+        &peakQualitySlider,
+        &lowCutFreqSlider,
+        &highCutFreqSlider
+    };
+
 }
 
 void OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)

@@ -11,6 +11,14 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 
+struct CustomVerticalSlider : juce::Slider
+{
+    CustomVerticalSlider() : juce::Slider(juce::Slider::SliderStyle::LinearBarVertical,juce::Slider::NoTextBox)
+    {
+
+    }
+};
+
 //==============================================================================
 /**
 */
@@ -31,9 +39,11 @@ private:
     // access the processor object that created it.
     OdinsSuperCoolAllPurposeAudioPluginAudioProcessor& audioProcessor;
 
+    CustomVerticalSlider peakFreqSlider, peakGainSlider, peakQualitySlider, lowCutFreqSlider, highCutFreqSlider;
     juce::Slider gainSlider;
     juce::Label GainLabel;
 
+    std::vector<juce::Component*> getComps();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor)
 };
