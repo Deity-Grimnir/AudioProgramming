@@ -271,8 +271,7 @@ void updateCoefficients(Coefficients& old, const Coefficients& replacements)
 }
 void OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::updateLowCutFilters(const ChainSettings& chainSettings)
 {
-    auto cutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(chainSettings.lowCutFreq, getSampleRate(), 2 * (chainSettings.lowCutSlope + 1));
-
+    auto cutCoefficients = makeLowCutFilter(chainSettings, getSampleRate());
     auto& leftLowCut = leftChain.get<Chainpositions::LowCut >();
     auto& rightLowCut = rightChain.get<Chainpositions::LowCut>();
 
@@ -283,7 +282,7 @@ void OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::updateLowCutFilters(cons
 
 void OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::updateHighCutFilters(const ChainSettings& chainSettings)
 {
-    auto highCutCoefficients = juce::dsp::FilterDesign<float>::designIIRLowpassHighOrderButterworthMethod(chainSettings.highCutFreq, getSampleRate(), 2 * (chainSettings.highCutSlope + 1));
+    auto highCutCoefficients = makeHighcutFilter(chainSettings, getSampleRate());
 
     auto& leftHighCut = leftChain.get <Chainpositions::HighCut>();
     auto& rightHighCut = rightChain.get <Chainpositions::HighCut>();
