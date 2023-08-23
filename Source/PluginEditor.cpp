@@ -55,7 +55,7 @@ void LookAndFeel::drawRotarySlider(juce::Graphics & g,
 
         g.setColour(Colours::white);
         g.drawFittedText(text, r.toNearestInt(), juce::Justification::centred, 1);
-
+        
 
     }
 
@@ -253,9 +253,9 @@ OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor::OdinsSuperCoolAllPurpos
     highCutFreqSliderAttachment(audioProcessor.apvts, "HighCut Freq", highCutFreqSlider),
     lowCutSlopeSliderAttachment(audioProcessor.apvts, "LowCut Slope", lowCutSlopeSlider),
     HighCutSlopeSliderAttachment(audioProcessor.apvts, "HighCut Slope", HighCutSlopeSlider),
-    driveAttachment(audioProcessor.apvts,("drive"), driveKnob),
+    driveAttachment(audioProcessor.apvts,("Drive"), driveKnob),
     rangeAttachment(audioProcessor.apvts,("Range"), rangeKnob),
-    blendAttachment(audioProcessor.apvts,("Blend"), driveKnob),
+    blendAttachment(audioProcessor.apvts,("Blend"), blendKnob),
     volumeAttachment(audioProcessor.apvts,("Volume"), volumeKnob)
 {
     // Make sure that before the constructor has finished, you've set the
@@ -324,8 +324,15 @@ void OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor::paint (juce::Graph
     g.drawRect(0, 480, 667,120, 2);
     g.drawRect(667, 0, 134, 600,2);
    
+    g.drawFittedText("Distortion", 680, -20, 100, 100, juce::Justification::centred, 1);
+    g.drawFittedText("Gain", -35, 440, 100, 100, juce::Justification::centred, 1);
+    g.drawFittedText("EQ", -35, 125, 100, 100, juce::Justification::centred, 1);
+    g.setColour(juce::Colours::white);
 
-   
+    g.drawFittedText("Drive", 705, 160, 50, 50, juce::Justification::centred, 1);
+    g.drawFittedText("range", 705, 360, 50, 50, juce::Justification::centred, 1);
+    g.drawFittedText("blend", 705, 560, 50, 50, juce::Justification::centred, 1);
+
 }
 
 void OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor::resized()
@@ -354,10 +361,10 @@ void OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor::resized()
     peakFreqSlider.setBounds(bounds.removeFromTop(bounds.getHeight() * 0.33));
     peakGainSlider.setBounds(bounds.removeFromTop(bounds.getHeight() * 0.5));
     peakQualitySlider.setBounds(bounds);
-    driveKnob.setBounds(667, 20, 134, 134);
-    rangeKnob.setBounds(667, 140, 134, 134);
-    blendKnob.setBounds(667, 280, 134, 134);
-    volumeKnob.setBounds(667, 420, 134, 134);
+    driveKnob.setBounds(667, 66, 134, 134);
+    rangeKnob.setBounds(667, 266, 134, 134);
+    blendKnob.setBounds(667, 466, 134, 134);
+
 
 
 

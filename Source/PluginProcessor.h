@@ -26,6 +26,7 @@ struct ChainSettings
     float peakFreq{ 0 }, peakGainInDecibels{ 0 }, peakQuality{ 1.f };
     float lowCutFreq{ 0 }, highCutFreq{ 0 };
     Slope lowCutSlope{ Slope::Slope_12 }, highCutSlope{ Slope::Slope_12 };
+    float drive{ 0 }, range{ 0 }, blend{ 0 }, volume{ 1.f };
 };
 
 ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts);
@@ -39,7 +40,8 @@ enum Chainpositions
 {
     LowCut,
     Peak,
-    HighCut
+    HighCut,
+    distortion
 };
 using Coefficients = Filter::CoefficientsPtr;
 void updateCoefficients(Coefficients& old, const Coefficients& replacements);
@@ -165,8 +167,9 @@ private:
 
     void updateLowCutFilters(const ChainSettings& chainSettings);
     void updateHighCutFilters(const ChainSettings& chainSettings);
-
+    float applyDistortion(float inputSample, float drive);
     void updateFilters();
+
 
 
 

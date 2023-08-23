@@ -196,6 +196,7 @@ void OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::processBlock (juce::Audi
             channelData[sample] = buffer.getSample(channel, sample) * rawVolume;
         }
     }
+
     updateFilters();
     juce::dsp::AudioBlock<float> block(buffer);
 
@@ -211,8 +212,67 @@ void OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::processBlock (juce::Audi
    // leftChannelFifo.update(buffer);
     //rightChannelFifo.update(buffer);
 
+
+    // In case we have more outputs than inputs, this code clears any output
+    // channels that didn't contain input data, (because these aren't
+    // guaranteed to be empty - they may contain garbage).
+    // This is here to avoid people getting screaming feedback
+    // when they first compile a plugin, but obviously you don't need to keep
+    // this code if your algorithm always overwrites all the output channels.
+
+
+    // This is the place where you'd normally do the guts of your plugin's
+    // audio processing...
+    // Make sure to reset the state if your inner loop is processing
+    // the samples and the outer loop is handling the channels.
+    // Alternatively, you can process the samples with the channels
+    // interleaved by keeping the same state.
+
+
+
+    auto chainSettings = getChainSettings(apvts);
+    float drive = chainSettings.drive;
+    float volume = chainSettings.volume;
+    float range = chainSettings.range;
+    float  blend = chainSettings.blend;
+
+    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+    {
+        auto* channelData = buffer.getWritePointer(channel);
+
+
+        // ..do something to the data...
+
+
+
+        for (int sample = 0; sample < buffer.getNumSamples(); sample++)
+        {
+
+
+            float cleanSignal = *channelData;
+
+            *channelData *= drive * range;
+
+            *channelData = (((((2.f / juce::float_Pi) * atan(*channelData)) * blend) + (cleanSignal * (1.f - blend))) / 2.f) * rawVolume;
+
+            channelData++;
+
+        }
+
+    }
 }
 
+
+
+
+float OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::applyDistortion(float inputSample, float drive)
+{
+    // Apply your distortion algorithm here and return the distorted sample
+    // You can use the atan, tanh, or other functions for distortion
+
+    // Example using tanh distortion
+    return tanh(inputSample * drive);
+}
 //juce::AudioProcessorValueTreeState& OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::getState()
 //{
 //    return *state;
@@ -238,7 +298,7 @@ void OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::getStateInformation (juc
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
 
-    juce::MemoryOutputStream mos(destData, true);
+     juce::MemoryOutputStream mos(destData, true);
     apvts.state.writeToStream(mos);
 }
 
@@ -266,6 +326,11 @@ ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts)
     settings.peakQuality = apvts.getRawParameterValue("Peak Quality")->load();
     settings.lowCutSlope = static_cast<Slope>(apvts.getRawParameterValue("LowCut Slope")->load());
     settings.highCutSlope = static_cast<Slope>(apvts.getRawParameterValue("HighCut Slope")->load());
+    settings.drive = static_cast<Slope>(apvts.getRawParameterValue("Drive")->load());
+    settings.range = static_cast<Slope>(apvts.getRawParameterValue("Range")->load());
+    settings.blend = static_cast<Slope>(apvts.getRawParameterValue("Blend")->load());
+    settings.volume = static_cast<Slope>(apvts.getRawParameterValue("Volume")->load());
+
 
     return settings;
 }
@@ -281,7 +346,7 @@ void OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::updatePeakFilter(const C
     auto peakCoefficients = makePeakFilter(chainSettings, getSampleRate());
     updateCoefficients(leftChain.get<Chainpositions::Peak>().coefficients, peakCoefficients);
     updateCoefficients(rightChain.get<Chainpositions::Peak>().coefficients, peakCoefficients);
-
+  
 
 }
 
@@ -294,8 +359,11 @@ void OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::updateLowCutFilters(cons
     auto cutCoefficients = makeLowCutFilter(chainSettings, getSampleRate());
     auto& leftLowCut = leftChain.get<Chainpositions::LowCut >();
     auto& rightLowCut = rightChain.get<Chainpositions::LowCut>();
+    //auto& distortionright = leftChain.get<Chainpositions::distortion>();
+    //auto& distortionleft = rightChain.get<Chainpositions::distortion>();
 
-
+    //updateCutFilter(distortionright, cutCoefficients, chainSettings.drive);
+    //updateCutFilter(distortionleft, cutCoefficients, chainSettings.drive);
     updateCutFilter(rightLowCut, cutCoefficients, chainSettings.lowCutSlope);
     updateCutFilter(leftLowCut, cutCoefficients, chainSettings.lowCutSlope);
 }
@@ -315,14 +383,17 @@ void OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::updateHighCutFilters(con
 void OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::updateFilters()
 {
     auto chainSettings = getChainSettings(apvts);
-
     updateLowCutFilters(chainSettings);
     updatePeakFilter(chainSettings);
     updateHighCutFilters(chainSettings);
-
 }
 
+void UpdateDistortion(const ChainSettings& chainSettings)
+{
 
+
+
+}
 juce::AudioProcessorValueTreeState::ParameterLayout
 
 OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::createParamaterLayout()
@@ -352,22 +423,22 @@ OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::createParamaterLayout()
                                                            "Peak Quality",
                                                            juce::NormalisableRange<float>(0.1f, 10.f,0.05f, 0.25f),
                                                            1.f));
-        layout.add(std::make_unique<juce::AudioParameterFloat>("drive", 
+        layout.add(std::make_unique<juce::AudioParameterFloat>("Drive", 
                                                             "Drive",
-                                                             juce::NormalisableRange<float>(0.f, 50.f, 0, 0.2f),
+                                                             juce::NormalisableRange<float>(0.f, 50.f, 0.5f, 0.2f),
                                                              0.f));
           layout.add(std::make_unique<juce::AudioParameterFloat>("Range", 
                                                             "Range",
-                                                             juce::NormalisableRange<float>((0.f, 1.f, 0), 0.9f),
+                                                             juce::NormalisableRange<float>((0.f, 10.f, 0.5f), 1.f),
                                                              0.f));
                     layout.add(std::make_unique<juce::AudioParameterFloat>("Blend", 
                                                             "Blend",
-                                                             juce::NormalisableRange<float>((0.01, 1.f, 0), 0.5f),
+                                                             juce::NormalisableRange<float>((0.01, 10.f, 0.001), 0.5f),
                                                              0.f));
-     layout.add(std::make_unique<juce::AudioParameterFloat>("Volume", 
-                                                            "Volume",
-                                                             juce::NormalisableRange<float>((0.f, 1.f, 0), 1.f),
-                                                             1.f));
+                    layout.add(std::make_unique<juce::AudioParameterFloat>("Volume",
+                        "Volume",
+                        juce::NormalisableRange<float>((0.f, 10.f, 0), 1.f),
+                        1.f));
 
 
 
