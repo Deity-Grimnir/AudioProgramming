@@ -18,7 +18,7 @@ void LookAndFeel::drawRotarySlider(juce::Graphics & g,
     using namespace juce;
     auto enabled = slider.isEnabled();
     auto bounds = Rectangle<float>(x, y, width, height);
-    g.setColour(Colour(255u, 165u, 0));
+    g.setColour(juce::Colours::deepskyblue);
     g.fillEllipse(bounds);
 
     g.setColour(Colour(0u, 0u, 0u));
@@ -50,7 +50,7 @@ void LookAndFeel::drawRotarySlider(juce::Graphics & g,
 
         r.setSize(strWidth + 4, rswl->getTextHeight() + 2);
         r.setCentre(bounds.getCentre());
-        g.setColour(Colours::purple);
+        g.setColour((juce::Colour(36u, 122u, 163u)));
         g.fillRect(r);
 
         g.setColour(Colours::white);
@@ -150,7 +150,8 @@ void ResponseCurveComponent::paint(juce::Graphics& g)
 {
     using namespace juce;
     // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll(Colours::purple);
+    g.fillAll(juce::Colour(36u, 122u, 163u));   
+
     auto responseArea = getLocalBounds();
     auto w = responseArea.getWidth();
 
@@ -285,16 +286,17 @@ OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor::~OdinsSuperCoolAllPurpo
 void OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor::paint (juce::Graphics& g)
 {
 
-    g.fillAll(juce::Colours::wheat);
+    g.fillAll(juce::Colours::lightskyblue);
 
 
-    juce::Colour textColor = juce::Colours::orange; 
+    juce::Colour textColor = juce::Colours::whitesmoke; 
     GainLabel.setColour(juce::Label::textColourId, textColor);
 
 
     g.setColour(juce::Colours::black);
-    g.drawRect(0, -1, 667, 482, 2);
-    g.drawRect(0, 481, 667,119, 2);
+    g.drawRect(0, 0, 667, 482, 2);
+    g.drawRect(0, 480, 667,120, 2);
+    g.drawRect(667, 0, 134, 600,2);
    
 
    
