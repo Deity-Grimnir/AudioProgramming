@@ -241,7 +241,10 @@ OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor::OdinsSuperCoolAllPurpos
     highCutFreqSlider(*audioProcessor.apvts.getParameter("HighCut Freq"), "Hz"),
     lowCutSlopeSlider(*audioProcessor.apvts.getParameter("LowCut Slope"), "dB/Oct"),
     HighCutSlopeSlider(*audioProcessor.apvts.getParameter("HighCut Slope"), "dB/Oct"),
-
+    driveKnob(*audioProcessor.apvts.getParameter("Drive"), ""),
+    rangeKnob(*audioProcessor.apvts.getParameter("Range"), ""),
+    blendKnob(*audioProcessor.apvts.getParameter("Blend"), ""),
+    volumeKnob(*audioProcessor.apvts.getParameter("Volume"), ""),
     responseCurveComponent(audioProcessor),
     peakFreqSliderAttachment(audioProcessor.apvts,"Peak Freq", peakFreqSlider),
     peakGainSliderAttachment(audioProcessor.apvts, "Peak Gain", peakGainSlider),
@@ -249,7 +252,11 @@ OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor::OdinsSuperCoolAllPurpos
     lowCutFreqSliderAttachment(audioProcessor.apvts, "LowCut Freq", lowCutFreqSlider),
     highCutFreqSliderAttachment(audioProcessor.apvts, "HighCut Freq", highCutFreqSlider),
     lowCutSlopeSliderAttachment(audioProcessor.apvts, "LowCut Slope", lowCutSlopeSlider),
-    HighCutSlopeSliderAttachment(audioProcessor.apvts, "HighCut Slope", HighCutSlopeSlider)
+    HighCutSlopeSliderAttachment(audioProcessor.apvts, "HighCut Slope", HighCutSlopeSlider),
+    driveAttachment(audioProcessor.apvts,("drive"), driveKnob),
+    rangeAttachment(audioProcessor.apvts,("Range"), rangeKnob),
+    blendAttachment(audioProcessor.apvts,("Blend"), driveKnob),
+    volumeAttachment(audioProcessor.apvts,("Volume"), volumeKnob)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -259,7 +266,26 @@ OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor::OdinsSuperCoolAllPurpos
     }
 
 
+    //addAndMakeVisible(driveKnob = new juce::Slider("Drive"));
+    //driveKnob->setSliderStyle(juce::Slider::Rotary);
+    //driveKnob->setTextBoxStyle(juce::Slider::NoTextBox, false, 100, 100);
 
+    //addAndMakeVisible(rangeKnob = new juce::Slider("Range"));
+    //rangeKnob->setSliderStyle(juce::Slider::Rotary);
+    //rangeKnob->setTextBoxStyle(juce::Slider::NoTextBox, false, 100, 100);
+
+    //addAndMakeVisible(blendKnob = new juce::Slider("Blend"));
+    //blendKnob->setSliderStyle(juce::Slider::Rotary);
+    //blendKnob->setTextBoxStyle(juce::Slider::NoTextBox, false, 100, 100);
+
+    //addAndMakeVisible(volumeKnob = new juce::Slider("Volume"));
+    //volumeKnob->setSliderStyle(juce::Slider::Rotary);
+    //volumeKnob->setTextBoxStyle(juce::Slider::NoTextBox, false, 100, 100);
+
+    //driveAttachment = new juce::AudioProcessorValueTreeState::SliderAttachment(p.getState(), "drive", *driveKnob);
+    //rangeAttachment = new juce::AudioProcessorValueTreeState::SliderAttachment(p.getState(), "range", *rangeKnob);
+    //blendAttachment = new juce::AudioProcessorValueTreeState::SliderAttachment(p.getState(), "blend", *blendKnob);
+    //volumeAttachment = new juce::AudioProcessorValueTreeState::SliderAttachment(p.getState(), "volume", *volumeKnob);
     setSize (800, 600);
 
     gainSlider.setSliderStyle(juce::Slider::SliderStyle::LinearHorizontal);
@@ -308,6 +334,7 @@ void OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor::resized()
     // subcomponents in your editor..
     //auto sliderLeft = 50;
     gainSlider.setBounds(70, 500, 50, 200);
+
  
 
     auto bounds = getLocalBounds()/1.2;
@@ -327,6 +354,12 @@ void OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor::resized()
     peakFreqSlider.setBounds(bounds.removeFromTop(bounds.getHeight() * 0.33));
     peakGainSlider.setBounds(bounds.removeFromTop(bounds.getHeight() * 0.5));
     peakQualitySlider.setBounds(bounds);
+    driveKnob.setBounds(667, 20, 134, 134);
+    rangeKnob.setBounds(667, 140, 134, 134);
+    blendKnob.setBounds(667, 280, 134, 134);
+    volumeKnob.setBounds(667, 420, 134, 134);
+
+
 
 }
 
@@ -343,7 +376,11 @@ std::vector<juce::Component*> OdinsSuperCoolAllPurposeAudioPluginAudioProcessorE
         &highCutFreqSlider,
         &lowCutSlopeSlider,
         &HighCutSlopeSlider,
-        &responseCurveComponent
+        &responseCurveComponent,
+        &driveKnob,
+        &rangeKnob,
+        &blendKnob,
+        &volumeKnob
     };
 
 }

@@ -91,16 +91,16 @@ private:
     // access the processor object that created it.
     OdinsSuperCoolAllPurposeAudioPluginAudioProcessor& audioProcessor;
 
-
     
-    RotarySliderWithLabels peakFreqSlider, peakGainSlider, peakQualitySlider, lowCutFreqSlider, highCutFreqSlider, lowCutSlopeSlider, HighCutSlopeSlider;
+    
+    RotarySliderWithLabels peakFreqSlider, peakGainSlider, peakQualitySlider, lowCutFreqSlider, highCutFreqSlider, lowCutSlopeSlider, HighCutSlopeSlider, driveKnob, rangeKnob, blendKnob, volumeKnob;
 
     ResponseCurveComponent responseCurveComponent;
 
     using APVTS = juce::AudioProcessorValueTreeState;
     using Attachment = APVTS::SliderAttachment;
 
-    Attachment peakFreqSliderAttachment, peakGainSliderAttachment, peakQualitySliderAttachment, lowCutFreqSliderAttachment, highCutFreqSliderAttachment, lowCutSlopeSliderAttachment, HighCutSlopeSliderAttachment;
+    Attachment peakFreqSliderAttachment, peakGainSliderAttachment, peakQualitySliderAttachment, lowCutFreqSliderAttachment, highCutFreqSliderAttachment, lowCutSlopeSliderAttachment, HighCutSlopeSliderAttachment, driveAttachment, rangeAttachment, blendAttachment, volumeAttachment;
 
 
 

@@ -22,6 +22,7 @@ OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::OdinsSuperCoolAllPurposeAudio
                        )
 #endif
 {
+    //state = new juce::AudioProcessorValueTreeState(*this, nullptr);
 }
 
 OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::~OdinsSuperCoolAllPurposeAudioPluginAudioProcessor()
@@ -212,6 +213,11 @@ void OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::processBlock (juce::Audi
 
 }
 
+//juce::AudioProcessorValueTreeState& OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::getState()
+//{
+//    return *state;
+//}
+
 //==============================================================================
 bool OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::hasEditor() const
 {
@@ -346,6 +352,25 @@ OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::createParamaterLayout()
                                                            "Peak Quality",
                                                            juce::NormalisableRange<float>(0.1f, 10.f,0.05f, 0.25f),
                                                            1.f));
+        layout.add(std::make_unique<juce::AudioParameterFloat>("drive", 
+                                                            "Drive",
+                                                             juce::NormalisableRange<float>(0.f, 50.f, 0, 0.2f),
+                                                             0.f));
+          layout.add(std::make_unique<juce::AudioParameterFloat>("Range", 
+                                                            "Range",
+                                                             juce::NormalisableRange<float>((0.f, 1.f, 0), 0.9f),
+                                                             0.f));
+                    layout.add(std::make_unique<juce::AudioParameterFloat>("Blend", 
+                                                            "Blend",
+                                                             juce::NormalisableRange<float>((0.01, 1.f, 0), 0.5f),
+                                                             0.f));
+     layout.add(std::make_unique<juce::AudioParameterFloat>("Volume", 
+                                                            "Volume",
+                                                             juce::NormalisableRange<float>((0.f, 1.f, 0), 1.f),
+                                                             1.f));
+
+
+
     juce::StringArray stringArray;
         for (int i = 0; i < 4; ++i)
         {
