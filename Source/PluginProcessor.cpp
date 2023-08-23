@@ -326,10 +326,10 @@ ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts)
     settings.peakQuality = apvts.getRawParameterValue("Peak Quality")->load();
     settings.lowCutSlope = static_cast<Slope>(apvts.getRawParameterValue("LowCut Slope")->load());
     settings.highCutSlope = static_cast<Slope>(apvts.getRawParameterValue("HighCut Slope")->load());
-    settings.drive = static_cast<Slope>(apvts.getRawParameterValue("Drive")->load());
-    settings.range = static_cast<Slope>(apvts.getRawParameterValue("Range")->load());
-    settings.blend = static_cast<Slope>(apvts.getRawParameterValue("Blend")->load());
-    settings.volume = static_cast<Slope>(apvts.getRawParameterValue("Volume")->load());
+    settings.drive = static_cast<float>(apvts.getRawParameterValue("Drive")->load());
+    settings.range = static_cast<float>(apvts.getRawParameterValue("Range")->load());
+    settings.blend = static_cast<float>(apvts.getRawParameterValue("Blend")->load());
+    settings.volume = static_cast<float>(apvts.getRawParameterValue("Volume")->load());
 
 
     return settings;
