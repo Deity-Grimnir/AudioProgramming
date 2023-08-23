@@ -133,6 +133,10 @@ void OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::prepareToPlay (double sa
 
     updateCutFilter(leftHighCut, highCutCoefficients, chainSettings.highCutSlope);
     updateCutFilter(rightHighCut, highCutCoefficients, chainSettings.highCutSlope);
+    
+
+//    leftChannelFifo.prepare(samplesPerBlock);
+  //&  rightChannelFifo.prepare(samplesPerBlock);
 
 }
 
@@ -183,7 +187,14 @@ void OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::processBlock (juce::Audi
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-
+    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+    {
+        auto* channelData = buffer.getWritePointer(channel);
+        for (int sample = 0; sample<buffer.getNumSamples(); ++sample)
+        {
+            channelData[sample] = buffer.getSample(channel, sample) * rawVolume;
+        }
+    }
     updateFilters();
     juce::dsp::AudioBlock<float> block(buffer);
 
@@ -195,6 +206,9 @@ void OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::processBlock (juce::Audi
 
     leftChain.process(leftContext);
     rightChain.process(rightContext);
+
+   // leftChannelFifo.update(buffer);
+    //rightChannelFifo.update(buffer);
 
 }
 
@@ -355,3 +369,4 @@ juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new OdinsSuperCoolAllPurposeAudioPluginAudioProcessor();
 }
+

@@ -65,6 +65,8 @@ private:
     juce::Atomic<bool> parametersChanged{ false };
 
     MonoChain monoChain;
+
+    //SinglechannelSampleFifo<OdinsSuperCoolAllPurposeAudioPluginAudioProcessor::BlockType>* leftchannelFifo;
 };
 
 //==============================================================================
@@ -106,6 +108,7 @@ private:
     juce::Label GainLabel;
 
     std::vector<juce::Component*> getComps();
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor)
 };

@@ -80,6 +80,7 @@ void RotarySliderWithLabels::paint(juce::Graphics& g)
     //g.setColour(Colours::yellow);
     //g.drawRect(sliderBounds);
 
+
     getLookAndFeel().drawRotarySlider(g, sliderBounds.getX(), sliderBounds.getY(), sliderBounds.getWidth(), sliderBounds.getHeight(), jmap(getValue(), Range.getStart(), Range.getEnd(), 0.0, 1.0),
         startAng, endAng, *this);
 
@@ -213,23 +214,20 @@ void ResponseCurveComponent::paint(juce::Graphics& g)
         responseCurve.lineTo(responseArea.getX() + i, map(mags[i]));
     }
 
-    g.setColour(Colours::orange);
+    g.setColour(Colours::black);
 
 
 
-    g.drawRoundedRectangle(responseArea.toFloat(), 4.f, 1.f);
+    g.drawRoundedRectangle(responseArea.toFloat(), 4.f, 2.f);
 
     g.setColour(Colours::white);
     g.strokePath(responseCurve, PathStrokeType(2.f));
+    g.setColour(Colours::black);
+    g.drawRect(0, -1, 667, 482, 2);
 
 
 
 
-
-
-
-
-    //g.drawFittedText("Volume", getLocalBounds(),gainSlider.getTextBoxHeight(), 1);
 
 }
 //==============================================================================
@@ -264,15 +262,16 @@ OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor::OdinsSuperCoolAllPurpos
     setSize (800, 600);
 
     gainSlider.setSliderStyle(juce::Slider::SliderStyle::LinearHorizontal);
-    gainSlider.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 100, 25);
+    gainSlider.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 0, 0);
     gainSlider.setRange(-48.0, 0.0);
     gainSlider.setValue(-1.0);
-    gainSlider.setSize(500, 40.f);
+    gainSlider.setSize(500, 100.f);
     gainSlider.addListener(this);
     addAndMakeVisible(gainSlider);
 
     GainLabel.setText("Volume", juce::dontSendNotification);
     addAndMakeVisible(GainLabel);
+    GainLabel.setColour(0,juce::Colours::orange);
     GainLabel.attachToComponent(&gainSlider, true);
 }
 
@@ -285,16 +284,19 @@ OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor::~OdinsSuperCoolAllPurpo
 //==============================================================================
 void OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor::paint (juce::Graphics& g)
 {
+
+    g.fillAll(juce::Colours::wheat);
+
+
+    juce::Colour textColor = juce::Colours::orange; 
+    GainLabel.setColour(juce::Label::textColourId, textColor);
+
+
+    g.setColour(juce::Colours::black);
+    g.drawRect(0, -1, 667, 482, 2);
+    g.drawRect(0, 481, 667,119, 2);
    
 
-
-
-
-
-
-
-
-    //g.drawFittedText("Volume", getLocalBounds(),gainSlider.getTextBoxHeight(), 1);
    
 }
 
@@ -302,12 +304,11 @@ void OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
-    auto sliderLeft = 50;
-    gainSlider.setBounds(sliderLeft, 25, getWidth() - sliderLeft - 10, 0);
-
+    //auto sliderLeft = 50;
+    gainSlider.setBounds(70, 500, 50, 200);
  
 
-    auto bounds = getLocalBounds();
+    auto bounds = getLocalBounds()/1.2;
     auto responseArea = bounds.removeFromTop(bounds.getHeight() * 0.33);
     
     responseCurveComponent.setBounds(responseArea);
@@ -354,3 +355,4 @@ void OdinsSuperCoolAllPurposeAudioPluginAudioProcessorEditor::sliderValueChanged
         audioProcessor.rawVolume = pow(10, gainSlider.getValue() / 20);
     }
 }
+
